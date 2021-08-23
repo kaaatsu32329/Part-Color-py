@@ -1,14 +1,20 @@
 import cv2
 import numpy as np
+import sys
+import os
+
+args = sys.argv
 
 def main():
-    image = cv2.imread('./images/shrine.jpg')
+    save_dir = './images/'
+    target_image = select_image()
+    image = cv2.imread(save_dir + target_image)
     h, w, s = image.shape
     image_size = (h, w)
 
     matrix = np.array([[1, 0, 0], [0, 1, 0]], dtype=np.float32)
 
-    color = 'red'
+    color = select_color()
 
     mask, masked_image = detect_color(image=image, color=color)
 
@@ -31,7 +37,7 @@ def main():
             break
 
     # CAUTION! The file name is already exist!!!
-    ## cv2.imwrite('./images/shrine_red.jpg', part_color_image)
+    ## cv2.imwrite(save_dir + 'shrine_red.jpg', part_color_image)
 
     cv2.destroyAllWindows()
 
@@ -73,6 +79,20 @@ def detect_color(image, color):
     masked_image = cv2.bitwise_and(image, image, mask=mask)
 
     return mask, masked_image
+
+def select_image():
+    dir_images = './samples/'
+    list_images = os.listdir(dir_images)
+    print(list_images)
+    target_image = input('Which image do you want to process? -> ')
+    target_image = str(target_image)
+    return target_image
+
+def select_color():
+    print('Which color will you use?')
+    selected = input('Red, Green, Blue -> ')
+    selected = str(selected)
+    return selected
 
 if __name__ == "__main__":
     main()
