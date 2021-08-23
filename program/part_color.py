@@ -3,28 +3,35 @@ import numpy as np
 
 def main():
     image = cv2.imread('./images/shrine.jpg')
+    h, w, s = image.shape
+    image_size = (h, w)
+
+    matrix = np.array([[1, 0, 0], [0, 1, 0]], dtype=np.float32)
 
     color = 'red'
 
-    _, masked_image = detect_color(image=image, color=color)
+    mask, masked_image = detect_color(image=image, color=color)
 
     # Increase saturation of masked image.
-    masked_image[:,:,(1)] = masked_image[:,:,(1)] * 1.2
+    ## masked_image[:,:,(1)] = masked_image[:,:,(1)] * 1.2
 
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
 
-    part_color_image = cv2.add(masked_image, gray_image)
-    #part_color_image2 = cv2.bitwise_or(masked_image, gray_image)
+    part_color_image = np.where(mask[:,:,np.newaxis], masked_image, gray_image)
 
     while True:
         cv2.imshow('Original', image)
-        #cv2.imshow('Masked', masked_image)
         cv2.imshow('Part color', part_color_image)
+        ## cv2.imshow('Mask', mask)
+        ## cv2.imshow('Masked', masked_image)
 
         key = cv2.waitKey(1)
         if key == ord('q'):
             break
+
+    # CAUTION! The file name is already exist!!!
+    ## cv2.imwrite('./images/shrine_red.jpg', part_color_image)
 
     cv2.destroyAllWindows()
 
@@ -35,11 +42,11 @@ def detect_color(image, color):
     if color == 'red':
         # Range of red color in HSV 1
         hsv_min = np.array([0,64,0])
-        hsv_max = np.array([30,255,255])
+        hsv_max = np.array([10,255,255])
         mask1 = cv2.inRange(hsv, hsv_min, hsv_max)
 
         # Range of red color in HSV 1
-        hsv_min = np.array([150,64,0])
+        hsv_min = np.array([170,64,0])
         hsv_max = np.array([179,255,255])
         mask2 = cv2.inRange(hsv, hsv_min, hsv_max)
 
