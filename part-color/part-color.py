@@ -7,9 +7,9 @@ args = sys.argv
 
 def main():
     save_dir = './images/'
-    load_dir = '../samples/'
+    image_dir = '../sample_images/'
     target_image = select_image()
-    image = cv2.imread(load_dir + target_image)
+    image = cv2.imread(image_dir + target_image)
     h, w, s = image.shape
     image_size = (h, w)
 
