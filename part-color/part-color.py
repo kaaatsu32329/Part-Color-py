@@ -76,6 +76,17 @@ def detect_color(image, color):
         # Mask of blue colors domain (255: blue, 0: else)
         mask = cv2.inRange(hsv, hsv_min, hsv_max)
 
+    elif color == 'orange':
+        # Range of orange color in HSV
+        hsv_min = np.array([16,100,150])
+        hsv_max = np.array([44,255,255])
+
+        # Mask of orange colors domain (255: blue, 0: else)
+        mask = cv2.inRange(hsv, hsv_min, hsv_max)
+
+    else:
+        pass
+
     # Masking processing
     masked_image = cv2.bitwise_and(image, image, mask=mask)
 
