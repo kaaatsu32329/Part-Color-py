@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='part-color',
+    name='partcolor',
     version='1.0',
     description='画像や映像のパートカラー化',
     author='UCHIYAMA Katsu',
