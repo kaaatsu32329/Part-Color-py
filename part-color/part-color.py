@@ -6,21 +6,22 @@ import os
 args = sys.argv
 
 def main():
-    save_dir = './images/'
-    image_dir = '../sample_images/'
-    target_image = select_image()
-    image = cv2.imread(image_dir + target_image)
-    h, w, s = image.shape
-    image_size = (h, w)
+    target, object = select()
 
-    matrix = np.array([[1, 0, 0], [0, 1, 0]], dtype=np.float32)
+    if object == 'Image':
+        image_process(target)
+    elif object == 'Movie':
+        movie_process(target)
+    else:
+        pass
 
-    color = select_color()
+def image_process(target):
+    IMAGE_DIR = '../sample_images/'
+    image = cv2.imread(IMAGE_DIR + target)
 
-    mask, masked_image = detect_color(image=image, color=color)
+    color, inverse = select_color()
 
-    # Increase saturation of masked image.
-    ## masked_image[:,:,(1)] = masked_image[:,:,(1)] * 1.2
+    mask, masked_image = detect_color(image=image, color=color, inverse=inverse)
 
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
@@ -37,12 +38,47 @@ def main():
         if key == ord('q'):
             break
 
-    # CAUTION! The file name is already exist!!!
-    ## cv2.imwrite(save_dir + 'shrine_red.jpg', part_color_image)
-
     cv2.destroyAllWindows()
 
-def detect_color(image, color):
+def movie_process(target):
+    MOVIE_DIR = '../sample_movies/'
+    movie = cv2.VideoCapture(MOVIE_DIR + target)
+
+    color, inverse = select_color()
+
+    playback, frame = movie.read()
+
+    height, width, channel = frame.shape
+    fps = movie.get(cv2.CAP_PROP_FPS)
+    player = cv2.VideoWriter('partcolor.mp4', cv2.VideoWriter_fourcc('m','p','4','v'), fps, (width, height), True)
+
+    cv2.namedWindow('Original')
+    cv2.namedWindow('Part color')
+
+    while playback:
+        mask, masked_frame = detect_color(image=frame, color=color, inverse=inverse)
+
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)
+
+        part_color_frame = np.where(mask[:,:,np.newaxis], masked_frame, gray_frame)
+
+        cv2.imshow('Original', frame)
+        cv2.imshow('Part color', part_color_frame)
+
+        player.write(part_color_frame)
+
+        key = cv2.waitKey(1)
+        if key == ord('q'):
+            break
+
+        playback, frame = movie.read()
+
+    movie.release()
+    player.release()
+    cv2.destroyAllWindows()
+
+def detect_color(image, color, inverse):
     # Convert to HSV space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -87,24 +123,43 @@ def detect_color(image, color):
     else:
         pass
 
+    if inverse:
+        mask = cv2.bitwise_not(mask)
+
     # Masking processing
     masked_image = cv2.bitwise_and(image, image, mask=mask)
 
     return mask, masked_image
 
-def select_image():
-    dir_images = '../samples/'
-    list_images = os.listdir(dir_images)
-    print(list_images)
-    target_image = input('Which image do you want to process? -> ')
-    target_image = str(target_image)
-    return target_image
+def select():
+    while True:
+        object = input('[I]mage or [M]ovie? >> ')
+        if object == 'I' or object == 'Image':
+            dir = '../sample_images/'
+            object = 'Image'
+            break
+        elif object == 'M' or object == 'Movie':
+            dir = '../sample_movies/'
+            object = 'Movie'
+            break
+        else:
+            pass
+    list_datas = os.listdir(dir)
+    print(list_datas)
+    target = input('Which do you want to process? >> ')
+    target = str(target)
+    return target, object
 
 def select_color():
     print('Which color will you use?')
-    selected = input('red, green, blue -> ')
+    selected = input('red, green, blue, orange >> ')
     selected = str(selected)
-    return selected
+    inverse = input('Inversion? [y]es/[n]o >> ')
+    if inverse == 'y' or inverse == 'yes':
+        inverse = True
+    else:
+        inverse = False
+    return selected, inverse
 
 if __name__ == "__main__":
     main()
