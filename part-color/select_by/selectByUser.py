@@ -1,8 +1,11 @@
 import os
 
-class Select():
+class SelectByUser():
     def __init__(self):
-        pass
+        self.target = ''
+        self.object = ''
+        self.selected = ''
+        self.inverse = 0
 
     def select(self):
         while True:

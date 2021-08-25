@@ -1,14 +1,14 @@
 import sys
-from select import select as sl
+from select_by import selectByUser as su
 from color import colorBase as cb
 
 args = sys.argv
 
 def main():
-    select = sl.Select()
+    selectByUser = su.SelectByUser()
     colorBase = cb.ColorBase('test')
-    target, object = select.select()
-    color, inverse = select.select_color()
+    target, object = selectByUser.select()
+    color, inverse = selectByUser.select_color()
 
     if object == 'Image':
         colorBase.image_process(target, color, inverse)
