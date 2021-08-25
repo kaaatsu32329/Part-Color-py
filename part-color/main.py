@@ -1,16 +1,19 @@
 import sys
+from select import select as sl
 from color import colorBase as cb
 
 args = sys.argv
 
 def main():
-    colorBase = cb.colorBase('test')
-    target, object = colorBase.select()
+    select = sl.Select()
+    colorBase = cb.ColorBase('test')
+    target, object = select.select()
+    color, inverse = select.select_color()
 
     if object == 'Image':
-        colorBase.image_process(target)
+        colorBase.image_process(target, color, inverse)
     elif object == 'Movie':
-        colorBase.movie_process(target)
+        colorBase.movie_process(target, color, inverse)
     else:
         pass
 

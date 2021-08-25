@@ -1,18 +1,15 @@
 import cv2
 import numpy as np
-import os
 
-class colorBase():
+class ColorBase():
     def __init__(self, path):
         self.path = path
 
-    def image_process(self, target):
+    def image_process(self, target, color, inverse):
         IMAGE_DIR = '../sample_images/'
         image = cv2.imread(IMAGE_DIR + target)
 
-        color, inverse = colorBase.select_color(self)
-
-        mask, masked_image = colorBase.detect_color(self, image=image, color=color, inverse=inverse)
+        mask, masked_image = ColorBase.detect_color(self, image=image, color=color, inverse=inverse)
 
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
@@ -31,11 +28,9 @@ class colorBase():
 
         cv2.destroyAllWindows()
 
-    def movie_process(self, target):
+    def movie_process(self, target, color, inverse):
         MOVIE_DIR = '../sample_movies/'
         movie = cv2.VideoCapture(MOVIE_DIR + target)
-
-        color, inverse = colorBase.select_color(self)
 
         playback, frame = movie.read()
 
@@ -47,7 +42,7 @@ class colorBase():
         cv2.namedWindow('Part color')
 
         while playback:
-            mask, masked_frame = colorBase.detect_color(self, image=frame, color=color, inverse=inverse)
+            mask, masked_frame = ColorBase.detect_color(self, image=frame, color=color, inverse=inverse)
 
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)
@@ -121,33 +116,3 @@ class colorBase():
         masked_image = cv2.bitwise_and(image, image, mask=mask)
 
         return mask, masked_image
-
-    def select(self):
-        while True:
-            object = input('[I]mage or [M]ovie? >> ')
-            if object == 'I' or object == 'Image':
-                dir = '../sample_images/'
-                object = 'Image'
-                break
-            elif object == 'M' or object == 'Movie':
-                dir = '../sample_movies/'
-                object = 'Movie'
-                break
-            else:
-                pass
-        list_datas = os.listdir(dir)
-        print(list_datas)
-        target = input('Which do you want to process? >> ')
-        target = str(target)
-        return target, object
-
-    def select_color(self):
-        print('Which color will you use?')
-        selected = input('red, green, blue, orange >> ')
-        selected = str(selected)
-        inverse = input('Inversion? [y]es/[n]o >> ')
-        if inverse == 'y' or inverse == 'yes':
-            inverse = True
-        else:
-            inverse = False
-        return selected, inverse
