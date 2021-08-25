@@ -1,6 +1,6 @@
 import os
 
-class SelectByUser():
+class Selection():
     def __init__(self):
         self.target = ''
         self.object = ''
