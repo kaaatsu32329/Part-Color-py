@@ -1,19 +1,18 @@
 import cv2
 import numpy as np
-import sys
 import os
 
 class colorBase():
     def __init__(self, path):
         self.path = path
 
-    def image_process(target):
+    def image_process(self, target):
         IMAGE_DIR = '../sample_images/'
         image = cv2.imread(IMAGE_DIR + target)
 
-        color, inverse = colorBase.select_color()
+        color, inverse = colorBase.select_color(self)
 
-        mask, masked_image = colorBase.detect_color(image=image, color=color, inverse=inverse)
+        mask, masked_image = colorBase.detect_color(self, image=image, color=color, inverse=inverse)
 
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
@@ -32,11 +31,11 @@ class colorBase():
 
         cv2.destroyAllWindows()
 
-    def movie_process(target):
+    def movie_process(self, target):
         MOVIE_DIR = '../sample_movies/'
         movie = cv2.VideoCapture(MOVIE_DIR + target)
 
-        color, inverse = colorBase.select_color()
+        color, inverse = colorBase.select_color(self)
 
         playback, frame = movie.read()
 
@@ -48,7 +47,7 @@ class colorBase():
         cv2.namedWindow('Part color')
 
         while playback:
-            mask, masked_frame = colorBase.detect_color(image=frame, color=color, inverse=inverse)
+            mask, masked_frame = colorBase.detect_color(self, image=frame, color=color, inverse=inverse)
 
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)
@@ -70,7 +69,7 @@ class colorBase():
         #player.release()
         cv2.destroyAllWindows()
 
-    def detect_color(image, color, inverse):
+    def detect_color(self, image, color, inverse):
         # Convert to HSV space
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -123,7 +122,7 @@ class colorBase():
 
         return mask, masked_image
 
-    def select():
+    def select(self):
         while True:
             object = input('[I]mage or [M]ovie? >> ')
             if object == 'I' or object == 'Image':
@@ -142,7 +141,7 @@ class colorBase():
         target = str(target)
         return target, object
 
-    def select_color():
+    def select_color(self):
         print('Which color will you use?')
         selected = input('red, green, blue, orange >> ')
         selected = str(selected)
