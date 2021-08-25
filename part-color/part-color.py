@@ -48,9 +48,9 @@ def movie_process(target):
 
     playback, frame = movie.read()
 
-    height, width, channel = frame.shape
+    height, width, _ = frame.shape
     fps = movie.get(cv2.CAP_PROP_FPS)
-    player = cv2.VideoWriter('partcolor.mp4', cv2.VideoWriter_fourcc('m','p','4','v'), fps, (width, height), True)
+    #player = cv2.VideoWriter('./images/partcolor.mp4', cv2.VideoWriter_fourcc('m','p','4','v'), fps, (width, height), True)
 
     cv2.namedWindow('Original')
     cv2.namedWindow('Part color')
@@ -66,7 +66,7 @@ def movie_process(target):
         cv2.imshow('Original', frame)
         cv2.imshow('Part color', part_color_frame)
 
-        player.write(part_color_frame)
+        #player.write(part_color_frame)
 
         key = cv2.waitKey(1)
         if key == ord('q'):
@@ -75,7 +75,7 @@ def movie_process(target):
         playback, frame = movie.read()
 
     movie.release()
-    player.release()
+    #player.release()
     cv2.destroyAllWindows()
 
 def detect_color(image, color, inverse):
