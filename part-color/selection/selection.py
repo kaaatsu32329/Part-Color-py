@@ -4,6 +4,7 @@ class Selection():
     def __init__(self):
         self.target = ''
         self.object = ''
+        self.base = ''
         self.selected = ''
         self.inverse = 0
 
@@ -20,11 +21,27 @@ class Selection():
                 break
             else:
                 pass
+
+        image_selecting = True
         list_datas = os.listdir(DIR)
         print(list_datas)
-        self.target = input('Which do you want to process? >> ')
-        self.target = str(self.target)
-        return self.target, self.object
+        while image_selecting:
+            self.target = input('Which do you want to process? >> ')
+            self.target = str(self.target)
+            image_selecting != os.path.exists('./DIR/' + self.target)
+
+        while True:
+            self.base = input('[C]olor base or [O]bject base? >> ')
+            if self.base == 'C' or self.base == 'Color':
+                self.object = 'Color'
+                break
+            elif self.base == 'O' or self.base == 'Object':
+                self.base = 'Object'
+                break
+            else:
+                pass
+
+        return self.target, self.object, self.base
 
     def select_color(self):
         print('Which color will you use?')
