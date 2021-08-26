@@ -23,7 +23,7 @@ class Selection():
         list_datas = os.listdir(DIR)
         print(list_datas)
         self.target = input('Which do you want to process? >> ')
-        target = str(self.target)
+        self.target = str(self.target)
         return self.target, self.object
 
     def select_color(self):
