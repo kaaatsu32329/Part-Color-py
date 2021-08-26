@@ -5,7 +5,8 @@ class Selection():
         self.target = ''
         self.object = ''
         self.base = ''
-        self.selected = ''
+        self.selected_color = ''
+        self.selected_object = ''
         self.inverse = 0
 
     def select(self):
@@ -52,4 +53,7 @@ class Selection():
             self.inverse = True
         else:
             self.inverse = False
-        return self.selected, self.inverse
+        return self.selected_color, self.inverse
+
+    def select_object(self):
+        return self.selected_object, self.inverse

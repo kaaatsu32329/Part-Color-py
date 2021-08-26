@@ -1,6 +1,7 @@
 import sys
-from selection import selection as sl
-from color import colorBase as cb
+from utils.selection import selection as sl
+from utils.colorBase import colorBase as cb
+from utils.objectBase import objectBase as ob
 
 args = sys.argv
 
@@ -10,22 +11,26 @@ def main():
     while not proceed:
         selection = sl.Selection()
         colorBase = cb.ColorBase('test')
+        objectBase = ob.ObjectBase('test')
         target, object, base = selection.select()
-        color, inverse = selection.select_color()
 
-        if object == 'Image':
-            if base == 'Color':
+        if base == 'Color':
+            color, inverse = selection.select_color()
+            if object == 'Image':
                 colorBase.image_process(target, color, inverse)
                 proceed = True
-            elif base == 'Object':
+            elif object == 'Movie':
+                colorBase.movie_process(target, color, inverse)
                 proceed = True
             else:
                 pass
-        elif object == 'Movie':
-            if base == 'Color':
-                colorBase.movie_process(target, color, inverse)
+        elif base == 'Object':
+            object, inverse = selection.selected_object()
+            if object == 'Image':
+                objectBase.image_process(target, object, inverse)
                 proceed = True
-            elif base == 'Object':
+            elif object == 'Movie':
+                objectBase.movie_process(target, object, inverse)
                 proceed = True
             else:
                 pass
