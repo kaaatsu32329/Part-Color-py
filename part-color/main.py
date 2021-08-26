@@ -5,17 +5,32 @@ from color import colorBase as cb
 args = sys.argv
 
 def main():
-    selection = sl.Selection()
-    colorBase = cb.ColorBase('test')
-    target, object = selection.select()
-    color, inverse = selection.select_color()
+    proceed = False
 
-    if object == 'Image':
-        colorBase.image_process(target, color, inverse)
-    elif object == 'Movie':
-        colorBase.movie_process(target, color, inverse)
-    else:
-        pass
+    while not proceed:
+        selection = sl.Selection()
+        colorBase = cb.ColorBase('test')
+        target, object, base = selection.select()
+        color, inverse = selection.select_color()
+
+        if object == 'Image':
+            if base == 'Color':
+                colorBase.image_process(target, color, inverse)
+                proceed = True
+            elif base == 'Object':
+                proceed = True
+            else:
+                pass
+        elif object == 'Movie':
+            if base == 'Color':
+                colorBase.movie_process(target, color, inverse)
+                proceed = True
+            elif base == 'Object':
+                proceed = True
+            else:
+                pass
+        else:
+            print('An error has occured!')
 
 if __name__ == "__main__":
     main()
