@@ -5,9 +5,8 @@ class Selection():
         self.target = ''
         self.object = ''
         self.base = ''
-        self.selected_color = ''
-        self.selected_object = ''
-        self.inverse = 0
+        self.selected = ''
+        self.inverse = False
 
     def select(self):
         while True:
@@ -29,12 +28,12 @@ class Selection():
         while image_selecting:
             self.target = input('Which do you want to process? >> ')
             self.target = str(self.target)
-            image_selecting != os.path.exists('./DIR/' + self.target)
+            image_selecting = not os.path.isfile(DIR + self.target)
 
         while True:
             self.base = input('[C]olor base or [O]bject base? >> ')
             if self.base == 'C' or self.base == 'Color':
-                self.object = 'Color'
+                self.base = 'Color'
                 break
             elif self.base == 'O' or self.base == 'Object':
                 self.base = 'Object'
@@ -53,7 +52,7 @@ class Selection():
             self.inverse = True
         else:
             self.inverse = False
-        return self.selected_color, self.inverse
+        return self.selected, self.inverse
 
     def select_object(self):
-        return self.selected_object, self.inverse
+        return self.selected, self.inverse
