@@ -1,9 +1,24 @@
 import cv2
-import numpy as np
 
-def mouse_operation(event, x, y, flags, palam):
-    global coord_x, coord_y
+class MouseOperation():
+    def __init__(self, image):
+        self.mouseEvent = {'x':None, 'y':None, 'event':None, 'flags':None}
+        cv2.setMouseCallback(image, self.__CallBackFunc, None)
 
-    if event == cv2.EVENT_LBUTTONDOWN:
-        coord_x = x
-        coord_y = y
+    def __CallBackFunc(self, event, x, y, flags, params):
+        self.mouseEvent['x'] = x
+        self.mouseEvent['y'] = y
+        self.mouseEvent['event'] = event
+        self.mouseEvent['flags'] = flags
+
+    def getData(self):
+        return self.mouseEvent
+
+    def getEvent(self):
+        return self.mouseEvent['event']
+
+    def getFlags(self):
+        return self.mouseEvent['flags']
+
+    def getPos(self):
+        return self.mouseEvent['x'], self.mouseEvent['y']
