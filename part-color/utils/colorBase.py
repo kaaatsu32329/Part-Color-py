@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+from utils.operation import MouseOperation
+
 class ColorBase():
     def __init__(self, path):
         self.path = path
@@ -8,6 +10,9 @@ class ColorBase():
     def image_process(self, target, color, inverse):
         IMAGE_DIR = '../sample_images/'
         image = cv2.imread(IMAGE_DIR + target)
+        cv2.namedWindow('Original')
+        cv2.namedWindow('Part color')
+        mouseData = MouseOperation('Part color')
 
         mask, masked_image = ColorBase.detect_color(self, image=image, color=color, inverse=inverse)
 
@@ -25,6 +30,8 @@ class ColorBase():
             key = cv2.waitKey(1)
             if key == ord('q'):
                 break
+            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
+                x, y = mouseData.getPos()
 
         cv2.destroyAllWindows()
 
@@ -116,3 +123,6 @@ class ColorBase():
         masked_image = cv2.bitwise_and(image, image, mask=mask)
 
         return mask, masked_image
+
+    def correction(self):
+        pass
