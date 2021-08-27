@@ -13,6 +13,7 @@ class ColorBase():
         cv2.namedWindow('Original')
         cv2.namedWindow('Part color')
         mouseData = MouseOperation('Part color')
+        click = 1
 
         mask, masked_image = ColorBase.detect_color(self, image=image, color=color, inverse=inverse)
 
@@ -24,14 +25,19 @@ class ColorBase():
         while True:
             cv2.imshow('Original', image)
             cv2.imshow('Part color', part_color_image)
-            ## cv2.imshow('Mask', mask)
-            ## cv2.imshow('Masked', masked_image)
 
-            key = cv2.waitKey(1)
-            if key == ord('q'):
-                break
-            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
+            cv2.waitKey(1)
+            #key = cv2.waitKey(1)
+            #if key == ord('q'):
+            #    break
+            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN and click:
                 x, y = mouseData.getPos()
+                ColorBase.correction(self, x, y)
+                click = 0
+            elif mouseData.getEvent() == cv2.EVENT_LBUTTONUP:
+                click = 1
+            elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
+                break
 
         cv2.destroyAllWindows()
 
@@ -124,5 +130,5 @@ class ColorBase():
 
         return mask, masked_image
 
-    def correction(self):
-        pass
+    def correction(self, x, y):
+        print('{}, {}'.format(x, y))
