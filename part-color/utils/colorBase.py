@@ -32,11 +32,11 @@ class ColorBase():
             #    break
             if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN and click:
                 x, y = mouseData.getPos()
-                ColorBase.correction(self, x, y)
+                ColorBase.__correction(self, x, y)
                 click = 0
-            elif mouseData.getEvent() == cv2.EVENT_LBUTTONUP:
+            elif mouseData.get_event() == cv2.EVENT_LBUTTONUP:
                 click = 1
-            elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
+            elif mouseData.get_event() == cv2.EVENT_RBUTTONDOWN:
                 break
 
         cv2.destroyAllWindows()
@@ -130,5 +130,5 @@ class ColorBase():
 
         return mask, masked_image
 
-    def correction(self, x, y):
+    def __correction(self, x, y):
         print('{}, {}'.format(x, y))
