@@ -30,8 +30,8 @@ class ColorBase():
             #key = cv2.waitKey(1)
             #if key == ord('q'):
             #    break
-            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN and click:
-                x, y = mouseData.getPos()
+            if mouseData.get_event() == cv2.EVENT_LBUTTONDOWN and click:
+                x, y = mouseData.get_pos()
                 ColorBase.__correction(self, x, y)
                 click = 0
             elif mouseData.get_event() == cv2.EVENT_LBUTTONUP:
@@ -126,7 +126,7 @@ class ColorBase():
             mask = cv2.bitwise_not(mask)
 
         # Masking processing
-        masked_image = cv2.bitwise_and(image, image, mask=mask)
+        masked_image = cv2.bitwise_and(image, image, mask)
 
         return mask, masked_image
 

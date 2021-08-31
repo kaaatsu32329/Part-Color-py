@@ -6,7 +6,7 @@ class Process():
     def __init__(self, proceed):
         self.proceed = proceed
 
-    def run(self, proceed):
+    def run(self):
         selection = Selection()
         colorBase = ColorBase('test')
         objectBase = ObjectBase('test')
@@ -16,17 +16,17 @@ class Process():
             color, inverse = selection.select_color()
             if object == 'Image':
                 colorBase.image_process(target, color, inverse)
-                self.proceed = True
             elif object == 'Movie':
                 colorBase.movie_process(target, color, inverse)
-                self.proceed = True
+            self.proceed = True
         elif base == 'Object':
             object, inverse = selection.selected_object()
             if object == 'Image':
                 objectBase.image_process(target, object, inverse)
-                self.proceed = True
             elif object == 'Movie':
                 objectBase.movie_process(target, object, inverse)
-                self.proceed = True
+            self.proceed = True
         else:
             print('An error has occured!')
+            self.proceed = False
+        return self.proceed

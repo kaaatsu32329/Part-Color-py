@@ -1,11 +1,11 @@
 from utils.process import Process
 
 def main():
-    process = Process()
     proceed = False
+    process = Process(proceed)
 
     while not proceed:
-        process.run()
+        proceed = process.run()
 
 if __name__ == "__main__":
     main()
