@@ -1,7 +1,7 @@
 import sys
 
-from utils.process import Process
 from utils.guiApplication import GuiApplication
+from utils.cuiApplication import cui_applciation
 
 args = sys.argv
 
@@ -9,12 +9,9 @@ def main():
     if len(sys.argv) <= 1:
         print('You need argument!')
         args.append('help')
-    if args[1] == 'cui':
-        proceed = False
-        process = Process(proceed)
 
-        while not proceed:
-            proceed = process.run()
+    if args[1] == 'cui':
+        cui_applciation()
 
     elif args[1] == 'gui':
         apps = GuiApplication()
