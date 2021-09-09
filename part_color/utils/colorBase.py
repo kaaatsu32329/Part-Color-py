@@ -11,8 +11,8 @@ class ColorBase():
     def image_process(self, target, color, inverse):
         IMAGE_DIR = '../sample_images/'
         image = cv2.imread(IMAGE_DIR + target)
-        cv2.namedWindow('Original')
-        cv2.namedWindow('Part color')
+        cv2.namedWindow('Original' ,cv2.WINDOW_NORMAL)
+        cv2.namedWindow('Part color', cv2.WINDOW_NORMAL)
         mouseData = MouseOperation('Part color')
         click = 1
 
@@ -27,7 +27,6 @@ class ColorBase():
             cv2.imshow('Original', image)
             cv2.imshow('Part color', part_color_image)
 
-            cv2.waitKey(1)
             key = cv2.waitKey(1)
             if key == ord('q'):
                 break
@@ -132,12 +131,12 @@ class ColorBase():
 
     def __correction(self, x, y, image, mask):
         print('{}, {}'.format(x, y))
-        h, s, v = ColorBase.get_hsv(image[y, x])
+        h, s, v = ColorBase.__get_hsv(image[y, x])
         height, width, _ = image.shape[:3]
         sub_image = image[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)]
         sub_hsv = cv2.cvtColor(sub_image, cv2.COLOR_BGR2HSV)
-        hsv_min = np.array([h-15, s-25, v-25])
-        hsv_max = np.array([h+15, s+25, v+25])
+        hsv_min = np.array([h-10, s-20, v-20])
+        hsv_max = np.array([h+10, s+20, v+20])
         ground = np.zeros((height, width), dtype=np.uint8)
         if mask[y, x]:
             sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
@@ -150,7 +149,7 @@ class ColorBase():
             new_mask = cv2.bitwise_or(mask, ground)
         return new_mask
 
-    def get_hsv(color):
+    def __get_hsv(color):
         hsv = colorsys.rgb_to_hsv(color[2]/255.0, color[1]/255.0, color[0]/255.0)
         h = int(hsv[0]*180.0)
         s = int(hsv[1]*255.0)
