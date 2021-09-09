@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import colorsys
 
 from utils.operation import MouseOperation
 
@@ -27,17 +28,16 @@ class ColorBase():
             cv2.imshow('Part color', part_color_image)
 
             cv2.waitKey(1)
-            #key = cv2.waitKey(1)
-            #if key == ord('q'):
-            #    break
+            key = cv2.waitKey(1)
+            if key == ord('q'):
+                break
             if mouseData.get_event() == cv2.EVENT_LBUTTONDOWN and click:
                 x, y = mouseData.get_pos()
-                ColorBase.__correction(self, x, y)
+                mask = ColorBase.__correction(self, x, y, image, mask)
+                part_color_image = np.where(mask[:,:,np.newaxis], masked_image, gray_image)
                 click = 0
             elif mouseData.get_event() == cv2.EVENT_LBUTTONUP:
                 click = 1
-            elif mouseData.get_event() == cv2.EVENT_RBUTTONDOWN:
-                break
 
         cv2.destroyAllWindows()
 
@@ -130,5 +130,29 @@ class ColorBase():
 
         return mask, masked_image
 
-    def __correction(self, x, y):
+    def __correction(self, x, y, image, mask):
         print('{}, {}'.format(x, y))
+        h, s, v = ColorBase.get_hsv(image[y, x])
+        height, width, _ = image.shape[:3]
+        sub_image = image[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)]
+        sub_hsv = cv2.cvtColor(sub_image, cv2.COLOR_BGR2HSV)
+        hsv_min = np.array([h-15, s-25, v-25])
+        hsv_max = np.array([h+15, s+25, v+25])
+        ground = np.zeros((height, width), dtype=np.uint8)
+        if mask[y, x]:
+            sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
+            ground[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)] = sub_mask
+            ground = cv2.bitwise_not(ground)
+            new_mask = cv2.bitwise_and(mask, ground)
+        else:
+            sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
+            ground[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)] = sub_mask
+            new_mask = cv2.bitwise_or(mask, ground)
+        return new_mask
+
+    def get_hsv(color):
+        hsv = colorsys.rgb_to_hsv(color[2]/255.0, color[1]/255.0, color[0]/255.0)
+        h = int(hsv[0]*180.0)
+        s = int(hsv[1]*255.0)
+        v = int(hsv[2]*255.0)
+        return h, s, v
