@@ -133,19 +133,17 @@ class ColorBase():
         print('{}, {}'.format(x, y))
         h, s, v = ColorBase.__get_hsv(image[y, x])
         height, width, _ = image.shape[:3]
-        sub_image = image[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)]
+        sub_image = image[max(int(y-height/20), 0) : min(int(y+height/20), height), max(int(x-width/20), 0) : min(int(x+width/20), width)]
         sub_hsv = cv2.cvtColor(sub_image, cv2.COLOR_BGR2HSV)
-        hsv_min = np.array([h-10, s-20, v-20])
-        hsv_max = np.array([h+10, s+20, v+20])
+        hsv_min = np.array([h-10, s-60, v-60])
+        hsv_max = np.array([h+10, s+60, v+60])
         ground = np.zeros((height, width), dtype=np.uint8)
+        sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
+        ground[max(int(y-height/20), 0) : min(int(y+height/20), height), max(int(x-width/20), 0) : min(int(x+width/20), width)] = sub_mask
         if mask[y, x]:
-            sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
-            ground[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)] = sub_mask
             ground = cv2.bitwise_not(ground)
             new_mask = cv2.bitwise_and(mask, ground)
         else:
-            sub_mask = cv2.inRange(sub_hsv, hsv_min, hsv_max)
-            ground[int(y-height/20) : int(y+height/20), int(x-width/20) : int(x+width/20)] = sub_mask
             new_mask = cv2.bitwise_or(mask, ground)
         return new_mask
 
